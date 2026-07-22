@@ -1,0 +1,70 @@
+{
+  "adapter": "typescript",
+  "test_cmd": "npx vitest run --reporter=basic",
+  "test_cmd_pattern": "vitest|jest|npm (?:run )?test|pnpm (?:run )?test|yarn (?:run )?test",
+  "test_globs": [
+    "tests/**",
+    "test/**",
+    "__tests__/**",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.test.js",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.spec.js"
+  ],
+  "test_def_regex": "\\b(?:it|test)(?:\\.each\\([^)]*\\))?\\s*\\(",
+  "right_reason_regexes": [
+    "AssertionError",
+    "expected .* to ",
+    "(?m)^\\s*[×✗✕].*",
+    "Error: expect",
+    "Property failed after"
+  ],
+  "wrong_reason_regexes": [
+    "Cannot find module",
+    "Failed to resolve import",
+    "SyntaxError",
+    "No test files found",
+    "Transform failed",
+    "error TS\\d+"
+  ],
+  "pass_regexes": [
+    "(?m)Tests\\s+\\d+ passed(?!.*failed)",
+    "(?m)^\\s*Test Suites?:.* passed(?!.*failed)"
+  ],
+  "fail_regexes": [
+    "(?m)\\d+ failed",
+    "(?m)^\\s*FAIL\\s"
+  ],
+  "mock_import_regexes": [
+    "\\bvi\\.mock\\b",
+    "\\bvi\\.fn\\b",
+    "\\bvi\\.spyOn\\b",
+    "\\bjest\\.mock\\b",
+    "\\bjest\\.fn\\b",
+    "\\bjest\\.spyOn\\b",
+    "from ['\"]sinon['\"]"
+  ],
+  "surveillance_regexes": [
+    "toHaveBeenCalledTimes",
+    "toHaveBeenCalledWith",
+    "toHaveBeenNthCalledWith",
+    "toHaveBeenLastCalledWith",
+    "\\.mock\\.calls\\b",
+    "\\bcalledOnceWith\\b",
+    "\\bcallCount\\b"
+  ],
+  "private_symbol_regexes": [
+    "from ['\"]\\S*/internal/",
+    "from ['\"]\\S*/_\\w+['\"]",
+    "\\[['\"]#\\w+['\"]\\]"
+  ],
+  "pbt": {
+    "library": "fast-check",
+    "install": "npm i -D fast-check",
+    "idiom": "import fc from 'fast-check'\n\ntest('P1: sort output is a permutation of input', () => {\n  fc.assert(fc.property(fc.array(fc.integer()), (xs) => {\n    expect([...sortUnderTest(xs)].sort()).toEqual([...xs].sort())\n  }))\n})"
+  },
+  "coverage_cmd": "npx vitest run --coverage",
+  "env_symlinks": ["node_modules"]
+}

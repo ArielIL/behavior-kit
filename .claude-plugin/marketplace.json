@@ -1,0 +1,11 @@
+{
+  "name": "bdk-marketplace",
+  "owner": { "name": "Ariel Zinman", "email": "ariel@twinesecurity.com" },
+  "plugins": [
+    {
+      "name": "bdk",
+      "source": "./",
+      "description": "Behavior-first Development Kit: phased behavior-driven TDD with property-based testing, enforced through hooks, gates, and an adversarial test verifier."
+    }
+  ]
+}

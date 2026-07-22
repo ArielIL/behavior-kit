@@ -1,0 +1,68 @@
+{
+  "adapter": "python",
+  "test_cmd": "python3 -m pytest -q --color=no -p no:cacheprovider",
+  "test_cmd_pattern": "pytest",
+  "test_globs": [
+    "tests/**",
+    "test/**",
+    "**/test_*.py",
+    "**/*_test.py",
+    "**/conftest.py"
+  ],
+  "test_def_regex": "(?m)^\\s*(?:async\\s+)?def\\s+test_\\w+",
+  "right_reason_regexes": [
+    "AssertionError",
+    "NotImplementedError",
+    "(?m)^E\\s+assert",
+    "(?m)^FAILED\\s",
+    "hypothesis\\.errors\\.Falsifying"
+  ],
+  "wrong_reason_regexes": [
+    "(?m)^ERROR(?:S)?\\b.*collect",
+    "errors? during collection",
+    "ImportError",
+    "ModuleNotFoundError",
+    "SyntaxError",
+    "IndentationError",
+    "INTERNALERROR",
+    "fixture '\\w+' not found",
+    "no tests ran"
+  ],
+  "pass_regexes": [
+    "(?m)^\\s*\\d+ passed(?!.*(failed|error))"
+  ],
+  "fail_regexes": [
+    "(?m)\\d+ (?:failed|error)",
+    "(?m)^FAILED\\s",
+    "(?m)^ERROR\\s"
+  ],
+  "mock_import_regexes": [
+    "from\\s+unittest\\s+import\\s+mock",
+    "from\\s+unittest\\.mock\\s+import",
+    "(?m)^\\s*import\\s+mock\\b",
+    "\\bMagicMock\\b",
+    "\\bmonkeypatch\\b",
+    "\\bmocker\\b",
+    "@(?:mock\\.)?patch\\b"
+  ],
+  "surveillance_regexes": [
+    "assert_called_once\\w*",
+    "assert_called_with",
+    "assert_has_calls",
+    "assert_any_call",
+    "\\.call_count\\b",
+    "\\.call_args\\b"
+  ],
+  "private_symbol_regexes": [
+    "from\\s+\\S+\\s+import\\s+_\\w+",
+    "from\\s+\\S*\\._\\w+\\s+import",
+    "(?m)^\\s*import\\s+\\S*\\._\\w+"
+  ],
+  "pbt": {
+    "library": "hypothesis",
+    "install": "pip install hypothesis (or add to dev dependencies)",
+    "idiom": "from hypothesis import given, strategies as st\n\n@given(st.lists(st.integers()))\ndef test_P1_sort_output_is_permutation_of_input(xs):\n    assert sorted(sort_under_test(xs)) == sorted(xs)"
+  },
+  "coverage_cmd": "python3 -m pytest --cov --cov-report=term",
+  "env_symlinks": [".venv", "venv", ".tox"]
+}
