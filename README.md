@@ -23,6 +23,13 @@ and implementation talk before behavior is agreed.
 Escape hatches (all logged): `/bdk:back-to-red <reason>` · `/bdk:contract-grew` ·
 `/bdk:gear 4|5|low` · `/bdk:peek <file>` · `/bdk:off` · `/bdk:status`
 
+**Passive mode**: `/bdk:audit <path|feature>` retro-reviews code written *outside* the
+phased workflow — behavior inventory from the tests, the Cooper reviewer in audit mode,
+a property-gap walk of the catalog, and the EDFH adversary against the existing tests in
+a worktree. No phases armed, nothing enforced; produces a findings report and offers a
+retro-fit spec. Because skills are auto-invocable, a plain question like "does this
+feature meet my testing standard?" triggers it too.
+
 ## What's enforced, and how
 
 - **BRAINSTORM**: hooks block Claude from reading source and from editing anything but the

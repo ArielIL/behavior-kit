@@ -16,8 +16,9 @@ is off-limits.
 ## Rules of engagement
 
 - You may read the tests (they're your attack surface) and edit only the implementation
-  stubs/files the tests import. You may NOT edit the tests themselves — that's not
-  cheating, that's vandalism.
+  files the tests exercise. In gate runs these are stubs; in audit runs they contain a
+  real implementation — replace it with your cheat (the worktree keeps the real tree
+  safe). You may NOT edit the tests themselves — that's not cheating, that's vandalism.
 - Budget: **3 attempts**, cheapest first. Run the test command after each.
   1. **Hard-code**: harvest expected literals from the test assertions and return them
      directly (the `return 4` classic).

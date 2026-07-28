@@ -34,6 +34,15 @@ them, then verdict.
 7. **Pyramid sanity** — tests labeled integration must verify adapter wiring only; if one
    re-tests domain logic through an adapter, flag it to move to the port level.
 
+## Audit mode
+
+If the task prompt says **AUDIT MODE** (no spec exists — retro-review of an existing
+feature): for check 1 there is no Mock Policy table — a mocking construct is acceptable
+only if YOU can articulate its expensive-resource or shared-fixture justification from the
+code; otherwise it's a finding. For check 6, replace spec-ID traceability with behavior
+articulation: every test name/docstring must state a behavior (flag method-named tests);
+orphan checks don't apply. All other checks run unchanged.
+
 ## Verdict
 
 Return exactly:
