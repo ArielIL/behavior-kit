@@ -30,6 +30,13 @@ a worktree. No phases armed, nothing enforced; produces a findings report and of
 retro-fit spec. Because skills are auto-invocable, a plain question like "does this
 feature meet my testing standard?" triggers it too.
 
+**Audit the audit**: `/bdk:check-session <session-id>` (or
+`scripts/bdk_session_check.py <id>`) replays a past session's transcript from
+`~/.claude/projects/` and grades whether the audit protocol actually ran: skill invoked,
+reviewer in AUDIT MODE with a verdict, EDFH adversary inside a pre-created worktree with a
+verdict, worktree cleaned up, no phase state touched, findings report delivered. Exit 0 =
+proper, 2 = protocol violations.
+
 ## What's enforced, and how
 
 - **BRAINSTORM**: hooks block Claude from reading source and from editing anything but the
