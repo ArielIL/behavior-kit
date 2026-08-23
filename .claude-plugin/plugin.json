@@ -1,7 +1,7 @@
 {
   "name": "bdk",
   "description": "Behavior-first Development Kit: enforces behavior-driven TDD (Ian Cooper) with property-based testing (Scott Wlaschin) through a phased workflow — brainstorm, red, green, refactor — backed by hooks, gates, and adversarial test verification.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": { "name": "Ariel Zinman", "email": "ariel@twinesecurity.com" },
   "license": "MIT"
 }
