@@ -45,7 +45,8 @@ proper, 2 = protocol violations.
   the "informed but not implementation-driven" thin line, enforced by context separation.
 - **RED→GREEN gate**: tests must *genuinely fail for the right reason* (assertion failures,
   not import errors); the `bdk-test-reviewer` agent rejects implementation-coupled tests
-  (unjustified mocks, call-count surveillance, private reach-ins, missing traceability);
+  (unjustified mocks, call-count surveillance, private reach-ins, missing traceability) and
+  non-deterministic ones (unseeded `random`/`Math.random`, `uuid4`, wall-clock);
   the `bdk-edfh` agent tries hard-coding, lookup tables, and evil-sort cheats against your
   tests in an isolated git worktree — GREEN unlocks only when the tests defeat it.
 - **GREEN**: test files are frozen by hook. The spec's Non-goals bound the implementation.
@@ -95,4 +96,8 @@ with zero new tests. Any finite set of examples can be gamed by a degenerate imp
 — so every feature also states properties (invariants, round-trips, idempotence, oracles)
 that hold for *all* inputs, and an adversary verifies the tests can't be cheated before
 implementation begins. If you can't state a property, you don't understand the requirement
-yet — that's the alarm, not the inconvenience.
+yet — that's the alarm, not the inconvenience. Generated input is licensed only inside a
+property test, where the library reports the seed and shrinks the counterexample: an
+unseeded random value in an example test is a flaky test, and usually a sign that the
+edge cases were never decided (enumerate them) or that the real intent was fuzzing (a
+separate target, outside the per-commit suite).

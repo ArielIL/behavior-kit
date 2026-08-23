@@ -12,10 +12,14 @@ every test below.
 ## 2. Behaviors
 
 <!-- Given/When/Then, happy paths then edge cases. IDs are load-bearing: tests reference
-     them by name (test_B1_...) and the reviewer checks traceability both ways. -->
+     them by name (test_B1_...) and the reviewer checks traceability both ways.
+     Edge states carry CONCRETE values (min, max, boundary±1) — an undecided value is what
+     later gets papered over with a random one. -->
 - **B1** Given <initial state>, When <action>, Then <observable outcome>. `[example]`
 - **B2** Given <edge state — empty/huge/duplicate/unauthorized/already-done>, When <action>,
   Then <observable outcome>. `[example]`
+- **B3** Given <input at the boundary: 0 | 1 | max | max+1>, When <action>, Then <observable
+  outcome per value>. `[example, parametrized]`
 
 ## 3. Non-goals
 
@@ -57,9 +61,16 @@ EDFH agent verdict: — (filled by /bdk:green)
 | ID | Type | Level | SUT | Notes |
 |----|----------|-------|------|-------|
 | B1 | example  | port  | `<PortName>` | happy path, doc value |
-| P1 | property | port  | `<PortName>` | generator: <what varies> |
+| B3 | example (parametrized) | port | `<PortName>` | rows: 0, 1, max, max+1 |
+| P1 | property | port  | `<PortName>` | `<pbt lib>` generator: <what varies>, budget <n> |
 
 Integration: <n> test(s) — adapter wiring only. E2E: <covered by … | 1 thin path>.
+
+<!-- Determinism: every row above is reproducible. Concrete inputs on example rows; the
+     configured PBT library (never ad-hoc random) on property rows; no wall-clock, uuid4 or
+     unseeded faker anywhere. Crash-hunting over a large input space is a fuzz target — list
+     it under Non-goals, run it outside the per-commit suite. -->
+Fuzzing: <none | target `<name>`, runs <where>, findings return as example tests>.
 
 ## 8. Mock policy
 

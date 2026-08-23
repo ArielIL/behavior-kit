@@ -33,6 +33,11 @@ Practical notes:
   genuinely independent property instead.
 - Generators surface what humans forget: weird unicode, non-printables, huge/negative
   numbers, empty and single-element collections, duplicates, nulls.
+- **A property test is the only licensed use of generated input** — because the library
+  reports the seed, shrinks the counterexample, and replays it. That license does not
+  extend to sprinkling `random.*` / `Math.random()` / `uuid4()` into an example test, which
+  is just a flaky test. When the generator finds a counterexample, pin it as a named example
+  test; the property keeps hunting. See `determinism.md` in this directory.
 - **If no non-trivial property can be stated, the requirement isn't understood yet** — that
   is a requirements-discovery alarm, not a testing inconvenience. Loop back to behaviors.
 - Keep example tests too: `2 + 2 == 4` documents intent at a glance; an abstract

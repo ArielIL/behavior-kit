@@ -31,12 +31,20 @@ command.
    adapter regex lists, and the words **"AUDIT MODE — no spec exists"**. It returns
    file:line findings for: unjustifiable mocks (only expensive-resource / shared-fixture
    reasons count), call-count/order surveillance, private-symbol reach-ins, structure
-   mirroring and method-named tests, shared-fixture hazards, pyramid misplacement.
+   mirroring and method-named tests, shared-fixture hazards, pyramid misplacement,
+   non-determinism (unseeded randomness, wall-clock, random IDs).
 
 4. **Wlaschin review — property gap.** Read
    `${CLAUDE_SKILL_DIR}/../brainstorm/references/property-catalog.md` and walk the eight
    questions against the port's contract. List each pattern that applies but has no
    property test. Flag if the stack's PBT library (config `pbt`) isn't installed at all.
+
+   Then read `${CLAUDE_SKILL_DIR}/../brainstorm/references/determinism.md` and classify
+   every non-determinism finding from step 3 by cause: undefined edge cases (→ parametrized
+   test over concrete boundary values), a real for-all-inputs claim (→ property test on the
+   PBT library), or crash-hunting (→ fuzz target outside the per-commit suite). A randomized
+   example test is a double finding: it is flaky *and* it marks an edge case the team never
+   decided.
 
 5. **EDFH verdict — the decisive check.** In a git repo:
    `bash <scripts>/bdk_worktree.sh create`, spawn `bdk-edfh` with the worktree dir, the
@@ -47,9 +55,10 @@ command.
 
 6. **Report, then offer (don't do unasked).** Order findings by severity:
    (a) EDFH CHEATED — show the cheat and name the killer property from the catalog;
-   (b) coupling smells (reviewer findings, file:line);
-   (c) missing properties;
-   (d) structural notes (naming, pyramid).
+   (b) flaky-by-construction tests (non-determinism findings) with their cause and fix;
+   (c) coupling smells (reviewer findings, file:line);
+   (d) missing properties;
+   (e) structural notes (naming, pyramid).
    Then offer two follow-ups: write a **retro-fit spec** at `.bdk/specs/<slug>.spec.md`
    from step 2's inventory (Status: IMPLEMENTED — future changes to this feature then
    enter the phased flow with documented behavior, and recon can read it), and/or **fix

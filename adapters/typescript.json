@@ -60,10 +60,24 @@
     "from ['\"]\\S*/_\\w+['\"]",
     "\\[['\"]#\\w+['\"]\\]"
   ],
+  "nondeterminism_regexes": [
+    "\\bMath\\.random\\s*\\(",
+    "\\bcrypto\\.randomUUID\\s*\\(",
+    "\\bcrypto\\.getRandomValues\\s*\\(",
+    "\\brandomUUID\\s*\\(",
+    "\\brandomBytes\\s*\\(",
+    "\\bDate\\.now\\s*\\(",
+    "\\bnew\\s+Date\\s*\\(\\s*\\)",
+    "\\bperformance\\.now\\s*\\(",
+    "\\bfaker\\.",
+    "\\bChance\\s*\\("
+  ],
   "pbt": {
     "library": "fast-check",
     "install": "npm i -D fast-check",
-    "idiom": "import fc from 'fast-check'\n\ntest('P1: sort output is a permutation of input', () => {\n  fc.assert(fc.property(fc.array(fc.integer()), (xs) => {\n    expect([...sortUnderTest(xs)].sort()).toEqual([...xs].sort())\n  }))\n})"
+    "idiom": "import fc from 'fast-check'\n\ntest('P1: sort output is a permutation of input', () => {\n  fc.assert(fc.property(fc.array(fc.integer()), (xs) => {\n    expect([...sortUnderTest(xs)].sort()).toEqual([...xs].sort())\n  }), { numRuns: 200 })\n})",
+    "budget": "{ numRuns: <n> } on every fc.assert — so suite runtime is predictable",
+    "replay": "fast-check prints seed and path on failure; re-run with fc.assert(..., { seed, path }) and pin the shrunk counterexample as a named example test (regression), keep the property hunting"
   },
   "coverage_cmd": "npx vitest run --coverage",
   "env_symlinks": ["node_modules"]

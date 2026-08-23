@@ -144,12 +144,19 @@ def cmd_record(project, state, config, args) -> int:
         return fail(f"{kind} verdict must be one of {valid}")
     if kind == "reviewer":
         state["reviewer"] = {"verdict": verdict, "at": time.time()}
-    else:
-        state["edfh"] = {
-            "verdict": verdict,
-            "attempts": state.get("edfh", {}).get("attempts", 0) + 1,
-        }
+        C.save_state(project, state)
+        return ok(f"{kind} verdict recorded: {verdict}")
+    attempts = state.get("edfh", {}).get("attempts", 0) + 1
+    state["edfh"] = {"verdict": verdict, "attempts": attempts}
     C.save_state(project, state)
+    if verdict == "CHEATED" and attempts >= 3:
+        return ok(
+            f"edfh verdict recorded: CHEATED (round {attempts}).\n"
+            "ROUND CAP REACHED — do NOT launch another EDFH round on autopilot. Every "
+            "round costs a fresh agent context. Present the residual cheat to the user: "
+            "either accept it as a logged gap in the spec's EDFH section, or get an "
+            "explicit go-ahead to continue."
+        )
     return ok(f"{kind} verdict recorded: {verdict}")
 
 

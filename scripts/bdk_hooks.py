@@ -204,6 +204,16 @@ def handle_posttooluse(state, config, inp, project):
             result = C.infer_run_result(output, config)
             if result is not None:
                 C.record_test_run(project, state, result, via="observed")
+        if "bdk_gate.py" in command and re.search(
+            r"\b(to-green|to-refactor|verify-done)\b", command
+        ):
+            output = json.dumps(inp.get("tool_response", ""), default=str)
+            if "GATE PASSED" in output:
+                emit({"systemMessage": (
+                    "[bdk] phase gate passed — cheapest moment to shed context: all BDK "
+                    "state lives in .bdk/ on disk, nothing in this chat is needed. "
+                    "Run /compact now (or /clear — /bdk:status restores context)."
+                )})
 
 
 def handle_stop(state, config, inp, project):

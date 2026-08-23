@@ -30,8 +30,51 @@ def load_state(project: str):
     return load_json(os.path.join(project, ".bdk", "state.json"))
 
 
+def main_worktree_dir(project: str):
+    """For a linked git worktree, the main worktree's directory; else None."""
+    try:
+        proc = subprocess.run(
+            ["git", "rev-parse", "--path-format=absolute", "--git-common-dir"],
+            cwd=project, capture_output=True, text=True, timeout=10,
+        )
+        if proc.returncode != 0:
+            return None
+        common = proc.stdout.strip()
+        if os.path.basename(common) != ".git":
+            return None
+        main = os.path.dirname(common)
+        if os.path.abspath(main) == os.path.abspath(project):
+            return None
+        return main
+    except Exception:
+        return None
+
+
 def load_config(project: str):
-    return load_json(os.path.join(project, ".bdk", "config.json"))
+    config = load_json(os.path.join(project, ".bdk", "config.json"))
+    if config is not None:
+        return config
+    # Linked worktrees start without the (often git-ignored) .bdk dir. Bootstrap
+    # the static config files from the main worktree so /bdk:init runs once per
+    # clone, not once per worktree/branch. Per-feature state stays local.
+    main = main_worktree_dir(project)
+    if not main:
+        return None
+    src = os.path.join(main, ".bdk")
+    if not os.path.isfile(os.path.join(src, "config.json")):
+        return None
+    dst = os.path.join(project, ".bdk")
+    os.makedirs(dst, exist_ok=True)
+    for name in os.listdir(src):
+        if name in ("state.json", "history", "tmp", "specs", "__pycache__"):
+            continue
+        source_path = os.path.join(src, name)
+        if os.path.isfile(source_path):
+            with open(source_path, "rb") as fsrc:
+                data = fsrc.read()
+            with open(os.path.join(dst, name), "wb") as fdst:
+                fdst.write(data)
+    return load_json(os.path.join(dst, "config.json"))
 
 
 def save_state(project: str, state: dict) -> None:

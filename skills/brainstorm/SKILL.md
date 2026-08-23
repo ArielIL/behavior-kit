@@ -41,6 +41,10 @@ test conventions worth reusing, known invariants, and hazards (these feed step 9
 Happy paths first, then force the edge sweep — ask about each: empty/none? huge?
 duplicates? weird unicode? concurrent? unauthorized? already-done (idempotence)?
 boundary values? Behaviors must describe *observable outcomes at the port*, not mechanics.
+Pin the edge sweep to **concrete values**, not adjectives: for every bounded input, record
+the actual minimum, maximum, just-inside and just-outside values in the behavior text. This
+is the step that prevents a randomized test later — "test a random quantity" is what a
+team writes when nobody decided which quantities are interesting.
 
 **4. Non-goals.** Explicit out-of-scope list — this is the anti-gold-plating contract that
 GREEN is held to.
@@ -65,6 +69,13 @@ P-IDs + accepted residual gaps in the spec.
 **8. Test plan.** One example test per behavior (documentation role) + property tests per
 property. Place each on the pyramid: port-level (default) / integration (adapter wiring
 ONLY) / e2e (thin). Note the stack's PBT library from `.bdk/config.json` (`pbt` field).
+Every row must be deterministic: example rows list their concrete inputs (a boundary set
+becomes one parametrized test with a named row per value), property rows name the library
+generator and the example budget. No ad-hoc randomness is planned here — if a row wants
+varying input, it is a property; if it wants crash-hunting, it is a fuzz target recorded
+under Non-goals and run outside this suite.
+
+@references/determinism.md
 
 **9. Mock policy.** Enumerate the port's dependencies (recon's hazards section helps).
 Per dependency choose real / in-memory fake / mock — default **real**; the only two

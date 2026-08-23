@@ -58,10 +58,24 @@
     "from\\s+\\S*\\._\\w+\\s+import",
     "(?m)^\\s*import\\s+\\S*\\._\\w+"
   ],
+  "nondeterminism_regexes": [
+    "\\brandom\\.(?!Random\\s*\\()\\w+\\s*\\(",
+    "\\brandom\\.Random\\s*\\(\\s*\\)",
+    "from\\s+random\\s+import\\s+(?!Random\\b)",
+    "\\buuid\\.uuid[14]\\s*\\(",
+    "\\bos\\.urandom\\s*\\(",
+    "\\bsecrets\\.(?:token_\\w+|choice|randbits|randbelow)\\s*\\(",
+    "\\bdatetime\\.(?:now|utcnow|today)\\s*\\(",
+    "\\bdate\\.today\\s*\\(",
+    "\\btime\\.time\\s*\\(",
+    "\\bFaker\\s*\\("
+  ],
   "pbt": {
     "library": "hypothesis",
     "install": "pip install hypothesis (or add to dev dependencies)",
-    "idiom": "from hypothesis import given, strategies as st\n\n@given(st.lists(st.integers()))\ndef test_P1_sort_output_is_permutation_of_input(xs):\n    assert sorted(sort_under_test(xs)) == sorted(xs)"
+    "idiom": "from hypothesis import given, settings, strategies as st\n\n@settings(max_examples=200)\n@given(st.lists(st.integers()))\ndef test_P1_sort_output_is_permutation_of_input(xs):\n    assert sorted(sort_under_test(xs)) == sorted(xs)",
+    "budget": "@settings(max_examples=<n>) — every property test states its budget so suite runtime is predictable",
+    "replay": "hypothesis stores failures in .hypothesis/ and prints @reproduce_failure(...); pin the shrunk counterexample as a named example test (regression), keep the property hunting"
   },
   "coverage_cmd": "python3 -m pytest --cov --cov-report=term",
   "env_symlinks": [".venv", "venv", ".tox"]

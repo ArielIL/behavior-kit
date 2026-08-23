@@ -30,7 +30,9 @@ Steps:
    .bdk/history/
    .bdk/tmp/
    ```
-   (`.bdk/config.json` and `.bdk/specs/` are committed.)
+   (`.bdk/config.json` and `.bdk/specs/` are committed. If the team's repo gitignores
+   all of `.bdk/`, that's fine too: linked git worktrees bootstrap the static config
+   files from the main worktree automatically — init is once per clone, not per branch.)
 
 4. **Install the doctrine.** Copy `<plugin-root>/rules/behavior-first.md` to
    `.claude/rules/bdk-behavior-first.md` in the project (committed — teammates get the

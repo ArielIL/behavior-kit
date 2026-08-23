@@ -13,6 +13,7 @@ property check is just a function; no library dependency for the kit itself).
 import json
 import os
 import random
+import re
 import subprocess
 import sys
 
@@ -27,6 +28,9 @@ from bdk_gate import check_spec_text  # noqa: E402
 
 with open(os.path.join(KIT, "adapters", "python.json")) as f:
     PY = json.load(f)
+
+with open(os.path.join(KIT, "adapters", "typescript.json")) as f:
+    TS = json.load(f)
 
 VALID_SPEC = """# Behavior Spec: Demo
 - Slug: demo-feature - Status: APPROVED - Gear: 4
@@ -328,6 +332,44 @@ def test_B13_stop_gives_up_after_two_blocks(tmp_path):
     proc = run_cli("bdk_hooks.py", ["stop"], proj, stdin=json.dumps({"cwd": proj}))
     out = json.loads(proc.stdout)
     assert "decision" not in out and "giving up" in out["systemMessage"]
+
+
+# ------------------------------- B14: the reviewer's non-determinism finder
+
+def flagged(snippet, patterns):
+    return any(re.search(p, snippet) for p in patterns)
+
+
+def test_B14_nondeterminism_regexes_flag_unseeded_input_and_clear_reproducible_input():
+    """Given a test line that draws a fresh value on every run, the adapter's
+    nondeterminism candidate-finder marks it; given a seeded generator, a PBT
+    generator, or an enumerated boundary list, it stays silent."""
+    for adapter in (PY, TS):
+        assert adapter["nondeterminism_regexes"], adapter["adapter"]
+
+    for snippet in ("qty = random.randint(1, 100)", "pick = random.choice(words)",
+                    "from random import randint", "rng = random.Random()",
+                    "uid = uuid.uuid4()", "now = datetime.now()",
+                    "stamp = time.time()", "name = Faker().name()",
+                    "salt = os.urandom(16)", "tok = secrets.token_hex(8)"):
+        assert flagged(snippet, PY["nondeterminism_regexes"]), snippet
+
+    for snippet in ("rng = random.Random(1234)",
+                    "@given(st.lists(st.integers()))",
+                    "@settings(max_examples=200)",
+                    "for qty in (0, 1, MAX, MAX + 1):",
+                    "frozen = datetime(2026, 1, 1)"):
+        assert not flagged(snippet, PY["nondeterminism_regexes"]), snippet
+
+    for snippet in ("const x = Math.random()", "const id = crypto.randomUUID()",
+                    "const t = Date.now()", "const d = new Date()",
+                    "const n = faker.person.firstName()"):
+        assert flagged(snippet, TS["nondeterminism_regexes"]), snippet
+
+    for snippet in ("fc.assert(fc.property(fc.integer(), f), { numRuns: 200 })",
+                    "const d = new Date('2026-01-01T00:00:00Z')",
+                    "for (const qty of [0, 1, MAX, MAX + 1])"):
+        assert not flagged(snippet, TS["nondeterminism_regexes"]), snippet
 
 
 # ------------------------------------------------------------- P: properties

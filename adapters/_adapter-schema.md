@@ -18,7 +18,9 @@ filling in this schema — nothing in `scripts/` or `skills/` needs to change.
 | `mock_import_regexes` | regex[] | reviewer | Mocking constructs; anything matching must be justified in the spec's Mock Policy. |
 | `surveillance_regexes` | regex[] | reviewer | Call-count/order assertions (Cooper's "mock as surveillance") — flagged. |
 | `private_symbol_regexes` | regex[] | reviewer | Tests importing private/internal symbols — flagged. |
+| `nondeterminism_regexes` | regex[] | reviewer | Unseeded randomness / wall-clock / random IDs in tests — flagged (blocking). Candidate-finders: the reviewer clears a match only if it is the PBT library's generator or an explicitly seeded one. |
 | `pbt.library` / `pbt.install` / `pbt.idiom` | strings | brainstorm, red | The stack's QuickCheck descendant and a canonical property-test snippet. |
+| `pbt.budget` / `pbt.replay` | strings | brainstorm, red, reviewer | How this library caps examples per test, and how a found counterexample is reproduced and pinned as a regression example test. |
 | `coverage_cmd` | string | gear-5 watch (v2) | Coverage run for Cooper's 5th-gear self-policing signal. |
 | `env_symlinks` | string[] | bdk_worktree.sh | Dirs symlinked into the EDFH worktree instead of copied (.venv, node_modules). |
 
