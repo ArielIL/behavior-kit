@@ -55,14 +55,22 @@ python3 <scripts>/bdk_gate.py record reviewer PASS
    their tests, then restart from **Stage 1**. Never patch one seam per round: each extra
    round costs a full fresh EDFH context (~200–450k tokens observed in practice).
 
+   **The killer prompt copies the verdict's prescription verbatim.** The adversary has
+   already attacked its own kill prescriptions (alphabet, construct checklist, bounds) —
+   do not redesign, minimize, or sample them down into "a fixed skeleton with a few
+   constructs". Every simplification you introduce here is the seam the next round finds.
+
    **Replay-prove the killers.** The verdict contains each cheat's implementation
    verbatim. The agent adding the killer tests must apply each cheat in the worktree, see
    its new test fail, then revert — a killer that was never seen killing is a guess.
 
-   **Round 2+ is verification, not a second expedition.** Tell the next EDFH spawn, in
-   its prompt: which seams are already killed and replay-proven, that repo exploration
-   is done (point it at the new tests only), and to spend at most 2 novel attempts before
-   returning SURVIVED. A full re-exploration round costs 3–5× a verification round.
+   **Round 2+ continues the SAME adversary — never a fresh expedition.** Send a
+   follow-up message to the round-1 EDFH agent (SendMessage with its agent id) instead of
+   spawning a new one: give it the new worktree dir (the old one was removed), the killer
+   test files, and a budget of at most 2 novel attempts before returning SURVIVED. It
+   already knows the repo and its own prescriptions — a fresh spawn re-derives all of
+   that at 3–5× the cost. Only if agent continuation is unavailable, spawn fresh with
+   the same verification framing in the prompt.
    The killer must be a **property test on the PBT library** or a parametrized example test
    over named boundary values — never an example test with a random input. Throwing
    `random.randint()` at a cheat kills it only on the runs where the draw happens to land

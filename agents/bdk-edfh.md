@@ -54,6 +54,13 @@ DETAILS:
 <if CHEATED: EVERY successful cheat — for each: the degenerate implementation (diff or
 code block), which tests let it through, and the property pattern that kills it
 (invariant / permutation / identity / round-trip / oracle / bound)>
+<for each kill prescription, attack it before reporting it: name the cheapest
+implementation that would still pass WITH that killer test added. If one exists,
+strengthen the prescription and repeat until you cannot name a survivor (or name the
+residual explicitly as an accepted-gap candidate). The final prescription must be
+implementable without design choices: exact generator alphabet (it must include the
+format's metacharacters), the full construct/boundary checklist — never a single sample
+input. Every hole you leave in a prescription costs the team a full extra gate round.>
 <if SURVIVED: per attempt — the cheat tried and the specific test/property that caught it>
 ```
 No preamble — the /bdk:green gate consumes your final message verbatim.

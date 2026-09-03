@@ -30,6 +30,15 @@ from `python3 <scripts>/bdk_state.py get spec`.
   generator through the port instead of reading the real ones. If you catch yourself
   reaching for a random value, read
   `${CLAUDE_SKILL_DIR}/../brainstorm/references/determinism.md` before writing the test.
+- **Oracle strength for transforming surfaces.** When the port renders, serializes,
+  converts, or formats content (markdown→PDF, model→CSV, template→HTML…), "the output
+  contains the input's words" is the weakest oracle and will not survive EDFH. Write,
+  already in RED: (a) a structural oracle — the format's metacharacters are absent or
+  transformed in the output, checked over a checklist of the format's constructs, never
+  one sample input; (b) generator alphabets that INCLUDE the format's metacharacters
+  (an alphabet that can't emit `[`/`(`/`<` never exercises a markdown link); (c) an
+  encoding round-trip (non-ASCII input survives to the output); (d) a size/pagination
+  bound. Each of these, missing, has cost a full EDFH round in practice.
 - **In source files: signature-only stubs.** The contract surface's signatures may be
   created so tests import cleanly, with bodies `raise NotImplementedError` / `throw new
   Error('not implemented')`. No logic — logic in RED defeats the gate.
