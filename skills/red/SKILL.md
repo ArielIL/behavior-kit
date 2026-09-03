@@ -43,7 +43,8 @@ from `python3 <scripts>/bdk_state.py get spec`.
 The spec is self-contained by design — exploit that. If this conversation already carries
 earlier phases or another feature, delegate the bulk authoring to ONE general-purpose
 subagent instead of writing tests inline: give it the spec path, `.bdk/config.json`, and
-the rules above verbatim. It writes the test files and stubs, registers each test file
+the rules above verbatim, and spawn it with `model: sonnet` — test authoring from an
+approved spec is not opus work. It writes the test files and stubs, registers each test file
 (`bdk_state.py append test_files`), and returns a one-paragraph summary. Phase hooks apply
 inside subagents too, so RED rules stay enforced. Only the summary lands in this session —
 not every draft and test run.

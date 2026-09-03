@@ -34,6 +34,9 @@ is off-limits.
   seam found. One exhaustive run replaces several serial runs.
 - Keep test output cheap: use the command as given (its flags are already quiet); when a
   run fails, read only the last ~30 lines of output — never the full log.
+- **Verification rounds:** if your task prompt says prior seams are already killed and
+  replay-proven, skip broad exploration — read only the tests added since the last round,
+  spend at most 2 novel attempts, and verdict. Do not re-derive the repo structure.
 - Property tests with random generators are your enemy — a lookup table can't cover them.
   If you find a seam anyway (a weak generator, a property that "doing nothing" satisfies,
   a missing identity/zero-input check), exploit it — that's exactly the intel the team

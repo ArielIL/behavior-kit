@@ -10,6 +10,11 @@ Scripts: `${CLAUDE_SKILL_DIR}/../../scripts`
 Run the four stages in order. Do not skip a failed stage — each failure message says
 exactly what to fix, and fixing tests is legal (you're still in RED).
 
+**Never pass a `model` parameter when spawning agents in this skill.** The bdk agent
+definitions pin their own models; for general-purpose helpers (killer tests etc.) pass
+`model: sonnet` explicitly. Overriding to opus multiplies the gate's cost for no gain —
+harvesting literals from assertions is not opus work.
+
 ## Stage 1 — genuine red
 
 ```
@@ -49,6 +54,15 @@ python3 <scripts>/bdk_gate.py record reviewer PASS
    (invariant? bound? round-trip? oracle?) Add every property to the spec (new P-IDs) and
    their tests, then restart from **Stage 1**. Never patch one seam per round: each extra
    round costs a full fresh EDFH context (~200–450k tokens observed in practice).
+
+   **Replay-prove the killers.** The verdict contains each cheat's implementation
+   verbatim. The agent adding the killer tests must apply each cheat in the worktree, see
+   its new test fail, then revert — a killer that was never seen killing is a guess.
+
+   **Round 2+ is verification, not a second expedition.** Tell the next EDFH spawn, in
+   its prompt: which seams are already killed and replay-proven, that repo exploration
+   is done (point it at the new tests only), and to spend at most 2 novel attempts before
+   returning SURVIVED. A full re-exploration round costs 3–5× a verification round.
    The killer must be a **property test on the PBT library** or a parametrized example test
    over named boundary values — never an example test with a random input. Throwing
    `random.randint()` at a cheat kills it only on the runs where the draw happens to land
